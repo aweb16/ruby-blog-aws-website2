@@ -1,0 +1,62 @@
+<div class="background-image">
+    <div class="home-container">
+        <h1 class="myTitle">My Blog</h1>
+        <%= link_to 'View Recent Posts', :posts, :class => "btn viewPosts" %>
+        <h3 id="currentTemp"></h3>
+    </div>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script>
+        $(".myTitle").on('click', changeTitleColor)
+        
+      
+        function changeTitleColor() {
+            var myTitle = $(".myTitle") ;
+            //var randColor = getRandomColor();
+            myTitle.css({"color": getRandomColor()})
+            
+        }
+        
+        
+                function getRandomColor(){
+          return "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        }
+        
+        function updateTemperatureOnHomepage(temp){
+            // console.log('ok running updateTemperatureOnHomepage with: ', temperature)
+            var temperature = "The Current Temperature in SF is: " + temp;
+            $("#currentTemp").html(temperature)
+        
+        }
+        
+  
+    navigator.geolocation.getCurrentPosition((location) => {      
+        var lat = location.coords.latitude || "37.796465";
+        var long = location.coords.longitude || "-122.402492";
+        console.log("you are here ", location)
+        
+        getTemperature(lat, long)
+    })
+    
+    function getTemperature(latitude,longitude) {
+
+    $.ajax({
+      url: 'api/v1/weather',
+      type: 'GET',
+      data: { lat: latitude, lng: longitude } ,
+      contentType: 'application/json; charset=utf-8',
+      success: function (response) {
+        var currentTemp = response.currently.apparentTemperature;
+        // console.log("current temp in SF is: ", currentTemp)
+        updateTemperatureOnHomepage(currentTemp)
+      },
+      error: function (error) {
+        console.log(error);
+      }
+    });
+}
+    
+
+    </script>
+</div>
+
+
